@@ -22,7 +22,17 @@
 require 'nokogiri' #parsing gem
 require 'httparty' #HTTP request gem
 
-url = "https://www.youtube.com/results?search_query=ordinary+sausage"
-uri = URI.parse(url)
-response = Net::HTTP.get_response(uri)
-puts response.body
+require 'open-uri' #Wrapper for Net::HTTP, Net::HTTPS and Net::FTP
+
+# Fetch and parse website
+html = "https://www.youtube.com/results?search_query=ordinary+sausage"
+doc = Nokogiri::HTML(URI.open(html))
+
+# Gets a server response code. 200 == all is good
+response = HTTParty.get(html)
+puts response.code
+
+# Finds the section of website we're interested in
+description = doc.search('div')
+#puts description
+File.write("log.txt",description)
